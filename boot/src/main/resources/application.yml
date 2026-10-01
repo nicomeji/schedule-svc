@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: schedule-svc
+
+  # Configuración de la base de datos PostgreSQL
+  datasource:
+    # Si la variable DB_HOST no está definida, usa "localhost"
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/my_gym
+    username: scheduler_svc
+    password: password_seguro
+    driver-class-name: org.postgresql.Driver
+
+  # Configuración de Flyway
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: public
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method

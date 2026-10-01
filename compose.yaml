@@ -1,0 +1,38 @@
+services:
+  # Base de datos PostgreSQL
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: my_gym
+      POSTGRES_USER: scheduler_svc
+      POSTGRES_PASSWORD: password_seguro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U usuario_db -d mi_base_datos" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Spring Boot
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_boot_app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # Inyecta el host del contenedor solo cuando corre en Docker
+      DB_HOST: postgres-db
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
