@@ -73,3 +73,10 @@ curl --location 'localhost:8080/api/v1/sessions' \
     "capacity": 12,
     "location": "Room 2"
 }'
+
+Register participant to session:
+curl --location 'localhost:8080/api/v1/sessions/3/registrations' \
+--header 'Content-Type: application/json' \
+--data '{
+    "participant_id": 1
+}'

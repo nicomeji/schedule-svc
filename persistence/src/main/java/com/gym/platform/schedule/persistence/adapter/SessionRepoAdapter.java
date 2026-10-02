@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.gym.platform.schedule.domain.common.Page;
 import com.gym.platform.schedule.domain.model.Coach;
+import com.gym.platform.schedule.domain.model.Participant;
 import com.gym.platform.schedule.domain.model.Session;
 import com.gym.platform.schedule.domain.model.SessionFilters;
 import com.gym.platform.schedule.domain.repo.SessionRepo;
@@ -40,7 +41,12 @@ public class SessionRepoAdapter implements SessionRepo {
     @Override
     public List<Session> retrieveCoachSessions(Coach coach) {
         return repository.findSessionsByCoachId(coach.id()).stream()
-            .map(mapper::toDomain)
-            .collect(Collectors.toList());
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean registerParticipant(Long sessionId, Participant participant) {
+        return repository.registerParticipant(sessionId, participant.id());
     }
 }

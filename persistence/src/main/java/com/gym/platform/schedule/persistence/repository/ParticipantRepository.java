@@ -16,4 +16,16 @@ public interface ParticipantRepository extends CrudRepository<ParticipantEntity,
                 WHERE sp.participant_id = :participantId
             """)
     List<SessionEntity> findSessionsByParticipantId(Long participantId);
+
+    @Query("""
+                SELECT
+                    p.id,
+                    p.name,
+                    p.email
+                FROM participants p
+                JOIN session_participants sp ON p.id = sp.participant_id
+                WHERE sp.session_id = :sessionId
+                ORDER BY sp.registered_at ASC
+            """)
+    List<ParticipantEntity> findParticipantsBySessionId(Long sessionId);
 }

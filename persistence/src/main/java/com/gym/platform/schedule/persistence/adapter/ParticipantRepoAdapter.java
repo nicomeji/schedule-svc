@@ -1,6 +1,8 @@
 package com.gym.platform.schedule.persistence.adapter;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -25,5 +27,12 @@ public class ParticipantRepoAdapter implements ParticipantRepo {
     @Override
     public Optional<Participant> retrieve(Long id) {
         return repository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Participant> retrieveSessionParticipants(Long sessionId) {
+        return repository.findParticipantsBySessionId(sessionId).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.gym.platform.schedule.persistence.model.SessionEntity;
-import com.gym.platform.schedule.persistence.projection.ParticipantRegistration;
 
 public interface SessionRepository extends SearchSessionRepository, CrudRepository<SessionEntity, Long> {
     @Query("""
@@ -17,19 +16,6 @@ public interface SessionRepository extends SearchSessionRepository, CrudReposito
                 WHERE c.id = :coachId
             """)
     List<SessionEntity> findSessionsByCoachId(Long coachId);
-
-    @Query("""
-                SELECT
-                    p.id AS participant_id,
-                    p.name,
-                    p.email,
-                    sp.registered_at
-                FROM participants p
-                JOIN session_participants sp ON p.id = sp.participant_id
-                WHERE sp.session_id = :sessionId
-                ORDER BY sp.registered_at ASC
-            """)
-    List<ParticipantRegistration> findParticipantsBySessionId(Long sessionId);
 
     @Modifying
     @Query("""
