@@ -1,6 +1,6 @@
 package com.gym.platform.schedule.rest.contract.common;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -10,8 +10,7 @@ import lombok.Data;
 public class TimeRangeDTO {
     @NotNull
     @Future
-    private ZonedDateTime from;
+    private OffsetDateTime from;
 
-    @NotNull
-    private ZonedDateTime to;
+    private OffsetDateTime to;
 }

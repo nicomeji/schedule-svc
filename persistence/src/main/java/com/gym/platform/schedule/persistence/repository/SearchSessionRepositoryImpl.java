@@ -3,6 +3,9 @@ package com.gym.platform.schedule.persistence.repository;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.springframework.data.jdbc.core.convert.EntityRowMapper;
+import org.springframework.data.jdbc.core.convert.JdbcConverter;
+import org.springframework.data.relational.core.mapping.RelationalPersistentEntity;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,31 +15,44 @@ import com.gym.platform.schedule.domain.common.Page;
 import com.gym.platform.schedule.domain.model.SessionFilters;
 import com.gym.platform.schedule.persistence.model.SessionEntity;
 
-import lombok.AllArgsConstructor;
-
 @Repository
-@AllArgsConstructor
 public class SearchSessionRepositoryImpl implements SearchSessionRepository {
+    // private static final RowMapper<SessionEntity> ROW_MAPPER =
+    // DataClassRowMapper.newInstance(SessionEntity.class);
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<SessionEntity> sessionRowMapper;
 
+    @SuppressWarnings("unchecked")
+    public SearchSessionRepositoryImpl(
+            NamedParameterJdbcTemplate jdbcTemplate,
+            JdbcConverter jdbcConverter) {
+        this.jdbcTemplate = jdbcTemplate;
+
+        RelationalPersistentEntity<SessionEntity> entity = (RelationalPersistentEntity<SessionEntity>) jdbcConverter
+                .getMappingContext()
+                .getRequiredPersistentEntity(SessionEntity.class);
+
+        this.sessionRowMapper = new EntityRowMapper<>(entity, jdbcConverter);
+    }
+
     @Override
     public Page<SessionEntity> searchSessions(SessionFilters filters) {
-        StringBuilder whereClause = new StringBuilder(" WHERE 1=1");
+        StringBuilder whereClause = new StringBuilder(" WHERE 1=1 ");
         MapSqlParameterSource params = new MapSqlParameterSource();
 
         if (filters.coachIds() != null && !filters.coachIds().isEmpty()) {
-            whereClause.append(" AND s.coach_id IN (:coachIds)");
+            whereClause.append(" AND s.coach_id IN (:coachIds) ");
             params.addValue("coachIds", filters.coachIds());
         }
 
         if (filters.startTime() != null) {
             if (filters.startTime().from() != null) {
-                whereClause.append(" AND s.start_time >= :fromTime");
+                whereClause.append(" AND s.start_time >= :fromTime ");
                 params.addValue("fromTime", Timestamp.from(filters.startTime().from()));
             }
             if (filters.startTime().to() != null) {
-                whereClause.append(" AND s.start_time <= :toTime");
+                whereClause.append(" AND s.start_time <= :toTime ");
                 params.addValue("toTime", Timestamp.from(filters.startTime().to()));
             }
         }

@@ -1,7 +1,7 @@
 package com.gym.platform.schedule.persistence.projection;
 
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public record SessionLocation(
         Long sesssionId,
@@ -11,5 +11,5 @@ public record SessionLocation(
         Integer capacity,
         Long locationId,
         String name,
-        ZoneId timeZone) {
+        ZoneOffset zoneOffset) {
 }

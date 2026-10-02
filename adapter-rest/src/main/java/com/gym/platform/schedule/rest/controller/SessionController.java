@@ -1,8 +1,5 @@
 package com.gym.platform.schedule.rest.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +13,7 @@ import com.gym.platform.schedule.rest.contract.SessionDTO;
 import com.gym.platform.schedule.rest.contract.common.PageDTO;
 import com.gym.platform.schedule.rest.mapper.PageDtoMapper;
 import com.gym.platform.schedule.rest.mapper.SessionDtoMapper;
+import com.gym.platform.schedule.rest.validation.ValidSessionSearchFilters;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -47,7 +45,7 @@ public class SessionController {
     }
 
     @GetMapping
-    public ResponseEntity<PageDTO<SessionDTO.Session>> search(@Valid SessionDTO.SearchSessionDTO filters) {
+    public ResponseEntity<PageDTO<SessionDTO.Session>> search(@Valid @ValidSessionSearchFilters SessionDTO.SearchSessionDTO filters) {
         Page<SessionDTO.Session> results = service.search(mapper.toModel(filters)).map(mapper::toSessionDTO);
         return ResponseEntity.ok(pageMapper.toDto(results));
     }

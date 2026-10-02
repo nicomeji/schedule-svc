@@ -1,8 +1,8 @@
 package com.gym.platform.schedule.rest.mapper;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,7 +22,7 @@ public interface SessionDtoMapper {
     @Mapping(target = "startTime", source = "sessionData.startTime")
     @Mapping(target = "endTime", source = "sessionData.endTime")
     @Mapping(target = "capacity", source = "sessionData.capacity")
-    @Mapping(target = "timeZone", expression = "java(extractZoneId(dto.getSessionData().getStartTime()))")
+    @Mapping(target = "zoneOffset", expression = "java(extractZoneOffset(dto.getSessionData().getStartTime()))")
     Session toModel(SessionDTO.CreateSession dto);
 
     // =========================================================================
@@ -32,8 +32,8 @@ public interface SessionDtoMapper {
     @Mapping(target = "sessionData.coachId", source = "coachId")
     @Mapping(target = "sessionData.location", source = "location")
     @Mapping(target = "sessionData.capacity", source = "capacity")
-    @Mapping(target = "sessionData.startTime", expression = "java(toZonedDateTime(session.startTime(), session.timeZone()))")
-    @Mapping(target = "sessionData.endTime", expression = "java(toZonedDateTime(session.endTime(), session.timeZone()))")
+    @Mapping(target = "sessionData.startTime", expression = "java(toOffsetDateTime(session.startTime(), session.zoneOffset()))")
+    @Mapping(target = "sessionData.endTime", expression = "java(toOffsetDateTime(session.endTime(), session.zoneOffset()))")
     SessionDTO.Session toSessionDTO(Session model);
 
     SessionFilters toModel(SessionDTO.SearchSessionDTO dto);
@@ -41,19 +41,21 @@ public interface SessionDtoMapper {
     // =========================================================================
     // Auxiliar mappings
     // =========================================================================
-    default Instant toInstant(ZonedDateTime zonedDateTime) {
-        return zonedDateTime != null ? zonedDateTime.toInstant() : null;
+    default Instant toInstant(OffsetDateTime offsetDateTime) {
+        return offsetDateTime != null ? offsetDateTime.toInstant() : null;
     }
 
-    default ZoneId extractZoneId(ZonedDateTime zonedDateTime) {
-        return zonedDateTime != null ? zonedDateTime.getZone() : ZoneId.systemDefault();
+    default ZoneOffset extractZoneOffset(OffsetDateTime offsetDateTime) {
+        return offsetDateTime != null ? offsetDateTime.getOffset() : ZoneOffset.UTC;
     }
 
-    default ZonedDateTime toZonedDateTime(Instant instant, ZoneId zoneId) {
+    default OffsetDateTime toOffsetDateTime(Instant instant, ZoneOffset offset) {
         if (instant == null) {
             return null;
         }
-        ZoneId zone = (zoneId != null) ? zoneId : ZoneId.systemDefault();
-        return instant.atZone(zone);
+        if (offset == null) {
+            return instant.atOffset(ZoneOffset.UTC);
+        }
+        return instant.atOffset(offset);
     }
 }

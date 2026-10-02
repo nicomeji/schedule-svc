@@ -46,3 +46,30 @@ Documentación Interactiva de la API (Swagger UI)
 http://localhost:8080/swagger-ui.html
 Especificación OpenAPI (JSON): http://localhost:8080/v3/api-docs
 
+Create participant:
+curl --location 'localhost:8080/api/v1/participants' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "Juan Perez",
+    "email": "juan.perez@gym.com"
+}'
+
+
+Create coach:
+curl --location 'localhost:8080/api/v1/coaches' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "Carlos Soto",
+    "email": "carlos.soto@gym.com"
+}'
+
+Create session:
+curl --location 'localhost:8080/api/v1/sessions' \
+--header 'Content-Type: application/json' \
+--data '{
+    "coach_id": 1,
+    "start_time": "2027-10-02T18:00:00-03:00",
+    "end_time": "2027-10-02T19:00:00-03:00",
+    "capacity": 12,
+    "location": "Room 2"
+}'

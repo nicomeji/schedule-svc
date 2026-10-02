@@ -5,6 +5,6 @@ public record Coach(
                 String email,
                 String name) {
         public Coach withoutId() {
-                return new Coach(null, this.name, this.email);
+                return new Coach(null, this.email, this.name);
         }
 }

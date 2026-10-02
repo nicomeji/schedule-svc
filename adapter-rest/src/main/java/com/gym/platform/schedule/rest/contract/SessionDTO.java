@@ -1,6 +1,6 @@
 package com.gym.platform.schedule.rest.contract;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -9,7 +9,6 @@ import com.gym.platform.schedule.rest.contract.common.TimeRangeDTO;
 import com.gym.platform.schedule.rest.validation.ValidTimeRange;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -20,10 +19,10 @@ public class SessionDTO {
         private Long coachId;
 
         @NotNull
-        private ZonedDateTime startTime;
+        private OffsetDateTime startTime;
 
         @NotNull
-        private ZonedDateTime endTime;
+        private OffsetDateTime endTime;
 
         @NotNull
         private Integer capacity;
@@ -57,7 +56,6 @@ public class SessionDTO {
 
     @Data
     public static class SearchSessionDTO {
-        @NotEmpty
         private List<@NotNull(message = "'coach_id' cannot be null") Long> coachIds;
 
         @Valid

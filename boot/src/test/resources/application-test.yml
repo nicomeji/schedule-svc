@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: schedule-svc
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    deserialization:
+      adjust-dates-to-context-time-zone: false
+  datasource:
+    ## url: jdbc:h2:mem:scheduledb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:scheduledb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;IGNORECASE=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-test.sql

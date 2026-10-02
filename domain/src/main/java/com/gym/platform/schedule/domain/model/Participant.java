@@ -5,6 +5,6 @@ public record Participant(
                 String email,
                 String name) {
         public Participant withoutId() {
-                return new Participant(null, this.name, this.email);
+                return new Participant(null, this.email, this.name);
         }
 }

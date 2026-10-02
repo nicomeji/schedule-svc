@@ -1,6 +1,10 @@
 spring:
   application:
     name: schedule-svc
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    deserialization:
+      adjust-dates-to-context-time-zone: false
 
   # Configuración de la base de datos PostgreSQL
   datasource:

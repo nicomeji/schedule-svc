@@ -11,6 +11,7 @@ import com.gym.platform.schedule.application.service.ParticipantCrudSvc;
 import com.gym.platform.schedule.rest.contract.ParticipantDTO;
 import com.gym.platform.schedule.rest.mapper.ParticipantDtoMapper;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/participnats")
+@RequestMapping("/api/v1/participants")
 public class ParticipnatController {
     private final ParticipantCrudSvc service;
     private final ParticipantDtoMapper mapper;
 
     @PostMapping
-    public ResponseEntity<ParticipantDTO> create(@RequestBody ParticipantDTO dto) {
+    public ResponseEntity<ParticipantDTO> create(@Valid @RequestBody ParticipantDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mapper.toDto(service.create(mapper.toDomain(dto))));
     }

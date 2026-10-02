@@ -3,12 +3,10 @@ package com.gym.platform.schedule.rest.contract;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class ParticipantDTO {
-    @NotNull
     @Schema(description = "Registered participant ID", example = "123")
     private Long id;
 

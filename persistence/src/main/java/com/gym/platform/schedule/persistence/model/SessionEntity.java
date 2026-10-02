@@ -1,7 +1,7 @@
 package com.gym.platform.schedule.persistence.model;
 
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -11,7 +11,7 @@ public record SessionEntity(
         @Id Long id,
         Long coachId,
         String location,
-        ZoneId timeZone,
+        ZoneOffset zoneOffset,
         Instant startTime,
         Instant endTime,
         Integer capacity) {
