@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gym.platform.schedule.application.service.SessionCrudSvc;
+import com.gym.platform.schedule.application.usecase.CreateSession;
 import com.gym.platform.schedule.domain.common.Page;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
 import com.gym.platform.schedule.rest.contract.common.PageDTO;
@@ -26,13 +27,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/v1/sessions")
 public class SessionController {
     private final SessionCrudSvc service;
+    private final CreateSession createSession;
     private final SessionDtoMapper mapper;
     private final PageDtoMapper pageMapper;
 
     @PostMapping
     public ResponseEntity<SessionDTO.Session> create(@Valid @RequestBody SessionDTO.CreateSession dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapper.toSessionDTO(service.create(mapper.toModel(dto))));
+                .body(mapper.toSessionDTO(createSession.createSession(mapper.toModel(dto))));
     }
 
     @GetMapping("/{id}")
@@ -45,7 +47,8 @@ public class SessionController {
     }
 
     @GetMapping
-    public ResponseEntity<PageDTO<SessionDTO.Session>> search(@Valid @ValidSessionSearchFilters SessionDTO.SearchSessionDTO filters) {
+    public ResponseEntity<PageDTO<SessionDTO.Session>> search(
+            @Valid @ValidSessionSearchFilters SessionDTO.SearchSessionDTO filters) {
         Page<SessionDTO.Session> results = service.search(mapper.toModel(filters)).map(mapper::toSessionDTO);
         return ResponseEntity.ok(pageMapper.toDto(results));
     }

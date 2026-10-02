@@ -16,10 +16,6 @@ import lombok.AllArgsConstructor;
 public class SessionCrudSvc {
     private final SessionRepo repo;
 
-    public Session create(Session session) {
-        return repo.create(session.withoutId());
-    }
-
     public Optional<Session> retrieve(Long id) {
         return repo.retrieve(id);
     }

@@ -3,6 +3,7 @@ package com.gym.platform.schedule.rest.config;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,7 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
-@RestControllerAdvice 
+@Order(2)
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ErrorResponseDTO> handleHandlerMethodValidationException(

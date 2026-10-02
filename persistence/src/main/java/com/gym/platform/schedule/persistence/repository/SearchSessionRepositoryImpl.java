@@ -64,7 +64,7 @@ public class SearchSessionRepositoryImpl implements SearchSessionRepository {
         }
 
         String dataSql = """
-                SELECT s.id, s.coach_id, s.start_time, s.end_time, s.capacity, s.location
+                SELECT s.id, s.coach_id, s.location, s.zone_offset, s.start_time, s.end_time, s.capacity
                 FROM sessions s
                 """ + whereClause + """
                 ORDER BY s.start_time ASC, s.id ASC

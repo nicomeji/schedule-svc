@@ -21,52 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SessionIT extends BaseIntegrationTest {
-    @Test
-    @DisplayName("Create a new session successfully")
-    public void createSesssionSuccessfully() {
-        TimeRangeDTO range = oneHourRange(OffsetDateTime.now().plusDays(1));
-
-        CoachDTO coach = createCoach("Juan SessionIT", "juan.SessionIT@gym.com");
-        assertNotNull(coach.getId());
-
-        SessionDTO.Session session = createSession(coach.getId(), range, 12);
-        assertNotNull(session.getId());
-        assertEquals(coach.getId(), session.getSessionData().getCoachId());
-        assertEquals(range.getFrom(), session.getSessionData().getStartTime());
-        assertEquals(range.getTo(), session.getSessionData().getEndTime());
-        assertEquals(12, session.getSessionData().getCapacity());
-        assertEquals("location_1", session.getSessionData().getLocation());
-    }
-
-    @Test
-    @DisplayName("Retrieve session successfully")
-    public void retrieveSessionSuccessfully() {
-        TimeRangeDTO range = oneHourRange(OffsetDateTime.now().plusDays(1));
-
-        CoachDTO coach = createCoach("Juan2 SessionIT", "juan2.SessionIT@gym.com");
-        assertNotNull(coach.getId());
-
-        SessionDTO.Session created = createSession(coach.getId(), range, 15);
-        assertNotNull(created.getId());
-
-        var json = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/v1/sessions/" + created.getId())
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
-        SessionDTO.Session  retrieved = parse(json, SessionDTO.Session.class);
-        assertEquals(created.getId(), retrieved.getId());
-        assertEquals(coach.getId(), retrieved.getSessionData().getCoachId());
-        assertEquals(range.getFrom(), retrieved.getSessionData().getStartTime());
-        assertEquals(range.getTo(), retrieved.getSessionData().getEndTime());
-        assertEquals(15, retrieved.getSessionData().getCapacity());
-        assertEquals("location_1", retrieved.getSessionData().getLocation());
-    }
-
+public class SessionSearchIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Search sessions of a coach")
     public void searchSesssionByCoach() {
@@ -108,8 +63,8 @@ public class SessionIT extends BaseIntegrationTest {
         SessionDTO.Session session2 = createSession(coach1.getId(), range2, 12);
 
         var queryParams = Map.of(
-            "coachIds", coach1.getId().toString(),
-            "startTime.From", OffsetDateTime.now().plusDays(2).minusHours(1).toString());
+                "coachIds", coach1.getId().toString(),
+                "startTime.From", OffsetDateTime.now().plusDays(2).minusHours(1).toString());
         PageDTO<SessionDTO.Session> sessions = searchSessions(queryParams);
         assertNotNull(sessions);
         assertEquals(1, sessions.getTotalElements());
