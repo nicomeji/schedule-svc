@@ -8,10 +8,9 @@ spring:
 
   # Configuración de la base de datos PostgreSQL
   datasource:
-    # Si la variable DB_HOST no está definida, usa "localhost"
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/my_gym
-    username: scheduler_svc
-    password: password_seguro
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/my_gym}
+    username: ${SPRING_DATASOURCE_USERNAME:scheduler_svc}
+    password: ${SPRING_DATASOURCE_PASSWORD:password_seguro}
     driver-class-name: org.postgresql.Driver
 
   # Configuración de Flyway
