@@ -16,6 +16,10 @@ public class CoachDTO {
         private String email;
 
         @NotBlank
-        @Schema(description = "Registered coach name", example = "Juan")
-        private String name;
+        @Schema(description = "Registered coach first name", example = "Juan")
+        private String firstName;
+
+        @NotBlank
+        @Schema(description = "Registered coach last name", example = "Juan")
+        private String lastName;
 }

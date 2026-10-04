@@ -24,7 +24,7 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     public void registerParticipantSuccessfully() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Juan SessionRegistrationIT", "juan.SessionRegistrationIT@gym.com");
+        var coach = createCoach("Juan", "SessionRegistrationIT", "juan.SessionRegistrationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
@@ -42,7 +42,7 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     public void retrieveSesssionRegistrationsSuccessfully() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Ana SessionRegistrationIT", "ana.SessionRegistrationIT@gym.com");
+        var coach = createCoach("Ana", "SessionRegistrationIT", "ana.SessionRegistrationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 10);
@@ -70,7 +70,7 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     public void removeRegistration() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Clara SessionRegistrationIT", "clara.SessionRegistrationIT@gym.com");
+        var coach = createCoach("Clara", "SessionRegistrationIT", "clara.SessionRegistrationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
@@ -98,7 +98,7 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     public void cannotDuplicateRegistration() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Carlos SessionRegistrationIT", "carlos.SessionRegistrationIT@gym.com");
+        var coach = createCoach("Carlos", "SessionRegistrationIT", "carlos.SessionRegistrationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
@@ -127,9 +127,9 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     public void cannotOverlapRegistration() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach1 = createCoach("Ale1 SessionRegistrationIT", "ale1.SessionRegistrationIT@gym.com");
+        var coach1 = createCoach("Ale1", "SessionRegistrationIT", "ale1.SessionRegistrationIT@gym.com");
         assertNotNull(coach1.getId());
-        var coach2 = createCoach("Ale2 SessionRegistrationIT", "ale2.SessionRegistrationIT@gym.com");
+        var coach2 = createCoach("Ale2", "SessionRegistrationIT", "ale2.SessionRegistrationIT@gym.com");
         assertNotNull(coach2.getId());
 
         var session1 = createSession(coach1.getId(), range, 12);
@@ -160,7 +160,7 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     public void cannotExceedSesssionCapacity() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Sara SessionRegistrationIT", "sara.SessionRegistrationIT@gym.com");
+        var coach = createCoach("Sara", "SessionRegistrationIT", "sara.SessionRegistrationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 1);

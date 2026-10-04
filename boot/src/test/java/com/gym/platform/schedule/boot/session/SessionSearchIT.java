@@ -24,8 +24,8 @@ public class SessionSearchIT extends BaseIntegrationTest {
         TimeRangeDTO range1 = oneHourRange(OffsetDateTime.now().plusDays(1));
         TimeRangeDTO range2 = oneHourRange(OffsetDateTime.now().plusDays(2));
 
-        CoachDTO coach1 = createCoach("Carlos1 SessionIT", "c1.SessionIT@gym.com");
-        CoachDTO coach2 = createCoach("Carlos2 SessionIT", "c2.SessionIT@gym.com");
+        CoachDTO coach1 = createCoach("Carlos1", "SessionIT", "c1.SessionIT@gym.com");
+        CoachDTO coach2 = createCoach("Carlos2", "SessionIT", "c2.SessionIT@gym.com");
 
         SessionDTO session1 = createSession(coach1.getId(), range1, 12);
         SessionDTO session2 = createSession(coach1.getId(), range2, 12);
@@ -52,7 +52,7 @@ public class SessionSearchIT extends BaseIntegrationTest {
         TimeRangeDTO range1 = oneHourRange(OffsetDateTime.now().plusDays(1));
         TimeRangeDTO range2 = oneHourRange(OffsetDateTime.now().plusDays(2));
 
-        CoachDTO coach1 = createCoach("Ale1 SessionIT", "a1.SessionIT@gym.com");
+        CoachDTO coach1 = createCoach("Ale1", "SessionIT", "a1.SessionIT@gym.com");
 
         @SuppressWarnings("unused")
         SessionDTO session1 = createSession(coach1.getId(), range1, 12);

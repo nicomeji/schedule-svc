@@ -32,6 +32,9 @@ public class Coach {
         private final String email;
 
         @NonNull
-        private final String name;
+        private final String firstName;
+
+        @NonNull
+        private final String lastName;
     }
 }

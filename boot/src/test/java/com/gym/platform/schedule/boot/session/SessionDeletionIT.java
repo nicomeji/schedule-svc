@@ -23,7 +23,7 @@ public class SessionDeletionIT extends BaseIntegrationTest {
     public void deleteSesssionSuccessfully() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Juan SessionDeletionIT", "juan.SessionDeletionIT@gym.com");
+        var coach = createCoach("Juan", "SessionDeletionIT", "juan.SessionDeletionIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
@@ -44,7 +44,7 @@ public class SessionDeletionIT extends BaseIntegrationTest {
     public void cannotDeleteNotEmptySesssion() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Carlos SessionDeletionIT", "carlos.SessionDeletionIT@gym.com");
+        var coach = createCoach("Carlos", "SessionDeletionIT", "carlos.SessionDeletionIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
@@ -84,7 +84,7 @@ public class SessionDeletionIT extends BaseIntegrationTest {
     public void notEmptySessionDeletion() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Seba SessionDeletionIT", "seba.SessionDeletionIT@gym.com");
+        var coach = createCoach("Seba", "SessionDeletionIT", "seba.SessionDeletionIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);

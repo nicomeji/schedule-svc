@@ -1,10 +1,12 @@
 package com.gym.platform.schedule.boot;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,6 +39,9 @@ public abstract class BaseIntegrationTest {
     @LocalServerPort
     protected int port;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
@@ -44,6 +49,22 @@ public abstract class BaseIntegrationTest {
         RestAssured.config = RestAssuredConfig.config()
                 .objectMapperConfig(new ObjectMapperConfig()
                         .jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
+    }
+
+    @AfterEach
+    void cleanDatabase() {
+        // Functional tests were designed to run independently, with unique coaches
+        // and participants per test to allow parallel execution.
+        // This cleanup was added specifically to ensure CoachIT tests run successfully.
+        // TODO: Find a better workaround to isolate the "Old Version" coach in CoachIT
+        // tests.
+        jdbcTemplate.execute("DELETE FROM session_participants");
+        jdbcTemplate.execute("DELETE FROM sessions");
+        jdbcTemplate.execute("DELETE FROM participants");
+        jdbcTemplate.execute("DELETE FROM coaches");
+        jdbcTemplate.execute("ALTER TABLE coaches ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE participants ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE sessions ALTER COLUMN id RESTART WITH 1");
     }
 
     protected ParticipantDTO createParticiant(String name, String email) {
@@ -58,9 +79,10 @@ public abstract class BaseIntegrationTest {
         return parse(json, ParticipantDTO.class);
     }
 
-    protected CoachDTO createCoach(String name, String email) {
+    protected CoachDTO createCoach(String firstName, String lastName, String email) {
         CoachDTO coach = new CoachDTO();
-        coach.setName(name);
+        coach.setFirstName(firstName);
+        coach.setLastName(lastName);
         coach.setEmail(email);
 
         var json = given().contentType(ContentType.JSON).body(coach)

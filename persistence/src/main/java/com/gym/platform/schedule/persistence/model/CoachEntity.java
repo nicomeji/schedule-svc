@@ -7,5 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public record CoachEntity(
         @Id Long id,
         String email,
-        String name) {
+        String name,
+        String firstName,
+        String lastName) {
 }

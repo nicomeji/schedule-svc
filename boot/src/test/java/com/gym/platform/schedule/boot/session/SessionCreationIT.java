@@ -22,7 +22,7 @@ public class SessionCreationIT extends BaseIntegrationTest {
     public void createSesssionSuccessfully() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Juan SessionCreationIT", "juan.SessionCreationIT@gym.com");
+        var coach = createCoach("Juan", "SessionCreationIT", "juan.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
@@ -39,7 +39,7 @@ public class SessionCreationIT extends BaseIntegrationTest {
     public void retrieveSessionSuccessfully() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Juan2 SessionCreationIT", "juan2.SessionCreationIT@gym.com");
+        var coach = createCoach("Juan2", "SessionCreationIT", "juan2.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
         var created = createSession(coach.getId(), range, 15);
@@ -63,7 +63,7 @@ public class SessionCreationIT extends BaseIntegrationTest {
     public void cannotOverlapSesssions() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        var coach = createCoach("Juan3 SessionCreationIT", "juan3.SessionCreationIT@gym.com");
+        var coach = createCoach("Juan3", "SessionCreationIT", "juan3.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
         var session = createSession(coach.getId(), range, 12);
