@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 public class CoachCrudSvc {
     private final CoachRepo repo;
 
-    public Coach create(Coach coach) {
-        return repo.create(coach.withoutId());
+    public Coach create(Coach.BaseData coachData) {
+        return repo.create(coachData);
     }
 
     public Optional<Coach> retrieve(Long id) {

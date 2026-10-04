@@ -17,9 +17,6 @@ import com.gym.platform.schedule.persistence.model.SessionEntity;
 
 @Repository
 public class SearchSessionRepositoryImpl implements SearchSessionRepository {
-    // private static final RowMapper<SessionEntity> ROW_MAPPER =
-    // DataClassRowMapper.newInstance(SessionEntity.class);
-
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<SessionEntity> sessionRowMapper;
 
@@ -41,26 +38,26 @@ public class SearchSessionRepositoryImpl implements SearchSessionRepository {
         StringBuilder whereClause = new StringBuilder(" WHERE 1=1 ");
         MapSqlParameterSource params = new MapSqlParameterSource();
 
-        if (filters.coachIds() != null && !filters.coachIds().isEmpty()) {
+        if (filters.getCoachIds() != null && !filters.getCoachIds().isEmpty()) {
             whereClause.append(" AND s.coach_id IN (:coachIds) ");
-            params.addValue("coachIds", filters.coachIds());
+            params.addValue("coachIds", filters.getCoachIds());
         }
 
-        if (filters.startTime() != null) {
-            if (filters.startTime().from() != null) {
+        if (filters.getStartTime() != null) {
+            if (filters.getStartTime().getFrom() != null) {
                 whereClause.append(" AND s.start_time >= :fromTime ");
-                params.addValue("fromTime", Timestamp.from(filters.startTime().from()));
+                params.addValue("fromTime", Timestamp.from(filters.getStartTime().getFrom()));
             }
-            if (filters.startTime().to() != null) {
+            if (filters.getStartTime().getTo() != null) {
                 whereClause.append(" AND s.start_time <= :toTime ");
-                params.addValue("toTime", Timestamp.from(filters.startTime().to()));
+                params.addValue("toTime", Timestamp.from(filters.getStartTime().getTo()));
             }
         }
 
         String countSql = "SELECT COUNT(*) FROM sessions s" + whereClause;
         Long totalElements = jdbcTemplate.queryForObject(countSql, params, Long.class);
         if (totalElements == null || totalElements == 0L) {
-            return new Page<>(List.of(), filters.page(), 0L);
+            return new Page<>(List.of(), filters.getPage(), 0L);
         }
 
         String dataSql = """
@@ -71,9 +68,9 @@ public class SearchSessionRepositoryImpl implements SearchSessionRepository {
                 LIMIT :limit OFFSET :offset
                 """;
 
-        params.addValue("limit", filters.page().size());
-        params.addValue("offset", filters.page().offset());
+        params.addValue("limit", filters.getPage().size());
+        params.addValue("offset", filters.getPage().offset());
 
-        return new Page<>(jdbcTemplate.query(dataSql, params, sessionRowMapper), filters.page(), totalElements);
+        return new Page<>(jdbcTemplate.query(dataSql, params, sessionRowMapper), filters.getPage(), totalElements);
     }
 }

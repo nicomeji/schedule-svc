@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 public class ParticipantCrudSvc {
     private final ParticipantRepo repo;
 
-    public Participant create(Participant participant) {
-        return repo.create(participant.withoutId());
+    public Participant create(Participant.BaseData participantData) {
+        return repo.create(participantData);
     }
 
     public Optional<Participant> retrieve(Long id) {

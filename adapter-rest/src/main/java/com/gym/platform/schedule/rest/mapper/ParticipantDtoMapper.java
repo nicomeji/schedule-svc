@@ -7,7 +7,7 @@ import com.gym.platform.schedule.rest.contract.ParticipantDTO;
 
 @Mapper
 public interface ParticipantDtoMapper {
-    Participant toDomain(ParticipantDTO dto);
+    Participant.BaseData toBaseData(ParticipantDTO dto);
 
     ParticipantDTO toDto(Participant model);
 }

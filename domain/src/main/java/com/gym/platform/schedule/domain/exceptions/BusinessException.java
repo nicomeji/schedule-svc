@@ -1,4 +1,4 @@
-package com.gym.platform.schedule.application.exceptions;
+package com.gym.platform.schedule.domain.exceptions;
 
 import lombok.Getter;
 

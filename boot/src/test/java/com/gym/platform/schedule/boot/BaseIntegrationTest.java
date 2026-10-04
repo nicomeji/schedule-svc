@@ -78,16 +78,13 @@ public abstract class BaseIntegrationTest {
         return parse(json, CoachDTO.class);
     }
 
-    protected SessionDTO.Session createSession(Long coachId, TimeRangeDTO range, Integer capacity) {
-        SessionDTO.SessionCommonData sessionData = new SessionDTO.SessionCommonData();
-        sessionData.setCoachId(coachId);
-        sessionData.setLocation("location_1");
-        sessionData.setStartTime(range.getFrom());
-        sessionData.setEndTime(range.getTo());
-        sessionData.setCapacity(capacity);
-
-        SessionDTO.CreateSession createSession = new SessionDTO.CreateSession();
-        createSession.setSessionData(sessionData);
+    protected SessionDTO createSession(Long coachId, TimeRangeDTO range, Integer capacity) {
+        SessionDTO createSession = new SessionDTO();
+        createSession.setCoachId(coachId);
+        createSession.setLocation("location_1");
+        createSession.setStartTime(range.getFrom());
+        createSession.setEndTime(range.getTo());
+        createSession.setCapacity(capacity);
 
         var json = given()
                 .contentType(ContentType.JSON)
@@ -98,10 +95,10 @@ public abstract class BaseIntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .asString();
-        return parse(json, SessionDTO.Session.class);
+        return parse(json, SessionDTO.class);
     }
 
-    protected PageDTO<SessionDTO.Session> searchSessions(Map<String, String> params) {
+    protected PageDTO<SessionDTO> searchSessions(Map<String, String> params) {
         var json = given()
                 .queryParams(params)
                 .when()
@@ -110,8 +107,8 @@ public abstract class BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .asString();
-        return parse(json, new TypeReference<PageDTO<SessionDTO.Session>>() {
-            });
+        return parse(json, new TypeReference<PageDTO<SessionDTO>>() {
+        });
     }
 
     protected <T> T parse(String json, Class<T> toType) {

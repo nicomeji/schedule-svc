@@ -27,13 +27,13 @@ public class SessionCreationIT extends BaseIntegrationTest {
         CoachDTO coach = createCoach("Juan SessionCreationIT", "juan.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
-        SessionDTO.Session session = createSession(coach.getId(), range, 12);
+        SessionDTO session = createSession(coach.getId(), range, 12);
         assertNotNull(session.getId());
-        assertEquals(coach.getId(), session.getSessionData().getCoachId());
-        assertEquals(range.getFrom(), session.getSessionData().getStartTime());
-        assertEquals(range.getTo(), session.getSessionData().getEndTime());
-        assertEquals(12, session.getSessionData().getCapacity());
-        assertEquals("location_1", session.getSessionData().getLocation());
+        assertEquals(coach.getId(), session.getCoachId());
+        assertEquals(range.getFrom(), session.getStartTime());
+        assertEquals(range.getTo(), session.getEndTime());
+        assertEquals(12, session.getCapacity());
+        assertEquals("location_1", session.getLocation());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class SessionCreationIT extends BaseIntegrationTest {
         CoachDTO coach = createCoach("Juan2 SessionCreationIT", "juan2.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
-        SessionDTO.Session created = createSession(coach.getId(), range, 15);
+        SessionDTO created = createSession(coach.getId(), range, 15);
         assertNotNull(created.getId());
 
         var json = given()
@@ -55,13 +55,13 @@ public class SessionCreationIT extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .asString();
-        SessionDTO.Session retrieved = parse(json, SessionDTO.Session.class);
+        SessionDTO retrieved = parse(json, SessionDTO.class);
         assertEquals(created.getId(), retrieved.getId());
-        assertEquals(coach.getId(), retrieved.getSessionData().getCoachId());
-        assertEquals(range.getFrom(), retrieved.getSessionData().getStartTime());
-        assertEquals(range.getTo(), retrieved.getSessionData().getEndTime());
-        assertEquals(15, retrieved.getSessionData().getCapacity());
-        assertEquals("location_1", retrieved.getSessionData().getLocation());
+        assertEquals(coach.getId(), retrieved.getCoachId());
+        assertEquals(range.getFrom(), retrieved.getStartTime());
+        assertEquals(range.getTo(), retrieved.getEndTime());
+        assertEquals(15, retrieved.getCapacity());
+        assertEquals("location_1", retrieved.getLocation());
     }
 
     @Test
@@ -72,18 +72,15 @@ public class SessionCreationIT extends BaseIntegrationTest {
         CoachDTO coach = createCoach("Juan3 SessionCreationIT", "juan3.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
-        SessionDTO.Session session = createSession(coach.getId(), range, 12);
+        SessionDTO session = createSession(coach.getId(), range, 12);
         assertNotNull(session.getId());
 
-        SessionDTO.SessionCommonData sessionData = new SessionDTO.SessionCommonData();
-        sessionData.setCoachId(coach.getId());
-        sessionData.setLocation("location_1");
-        sessionData.setStartTime(range.getFrom());
-        sessionData.setEndTime(range.getTo());
-        sessionData.setCapacity(12);
-
-        SessionDTO.CreateSession createSession = new SessionDTO.CreateSession();
-        createSession.setSessionData(sessionData);
+        SessionDTO createSession = new SessionDTO();
+        createSession.setCoachId(coach.getId());
+        createSession.setLocation("location_1");
+        createSession.setStartTime(range.getFrom());
+        createSession.setEndTime(range.getTo());
+        createSession.setCapacity(12);
 
         var json = given()
                 .contentType(ContentType.JSON)

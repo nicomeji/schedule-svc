@@ -2,35 +2,58 @@ package com.gym.platform.schedule.domain.model;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Objects;
+import java.util.List;
+import java.util.function.Function;
 
-public record Session(
-                Long id,
-                Long coachId,
-                String location,
-                ZoneOffset zoneOffset,
-                Instant startTime,
-                Instant endTime,
-                Integer capacity) {
-        public Session {
-                Objects.requireNonNull(coachId, "coachId cannot be null");
-                Objects.requireNonNull(location, "location cannot be null");
-                Objects.requireNonNull(zoneOffset, "zoneOffset cannot be null");
-                Objects.requireNonNull(startTime, "startTime cannot be null");
-                Objects.requireNonNull(endTime, "endTime cannot be null");
-                Objects.requireNonNull(capacity, "capacity cannot be null");
+import com.gym.platform.schedule.domain.common.TimeRange;
 
-                if (!startTime.isBefore(endTime)) {
-                        throw new IllegalArgumentException("startTime must be before endTime");
-                }
-        }
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.Delegate;
 
-        public Session withoutId() {
-                return new Session(null, this.coachId, this.location, this.zoneOffset, this.startTime, this.endTime,
-                                this.capacity);
-        }
+@AllArgsConstructor
+public class Session {
+    @Getter
+    @NonNull
+    private final Long id;
 
-        public boolean isOverlapping(Session other) {
-                return this.startTime().isBefore(other.endTime()) && other.startTime().isBefore(this.endTime());
-        }
+    @Delegate
+    @NonNull
+    private final BaseData data;
+
+    @NonNull
+    private final Function<Session, List<ParticipantRegistration>> retrieveRegistrations;
+
+    public List<ParticipantRegistration> retrieveRegistrations() {
+        return retrieveRegistrations.apply(this);
+    }
+
+    @Data
+    public static class BaseData {
+        @NonNull
+        private final Long coachId;
+
+        @NonNull
+        private final String location;
+
+        @NonNull
+        private final ZoneOffset zoneOffset;
+
+        @NonNull
+        private final TimeRange.ClosedTimeRange timeRange;
+
+        @NonNull
+        private final Integer capacity;
+    }
+
+    @Data
+    public static class ParticipantRegistration {
+        @NonNull
+        private final Long participantId;
+
+        @NonNull
+        private final Instant registeredAt;
+    }
 }

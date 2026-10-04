@@ -9,34 +9,21 @@ import org.mapstruct.Mapping;
 
 import com.gym.platform.schedule.domain.model.Session;
 import com.gym.platform.schedule.domain.model.SessionFilters;
+import com.gym.platform.schedule.rest.contract.SearchSessionDTO;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
 
 @Mapper
 public interface SessionDtoMapper {
-    // =========================================================================
-    // SessionDTO.CreateSession -> SessionModel
-    // =========================================================================
-    @Mapping(target = "id", ignore = true) // id no existe en CreateSession
-    @Mapping(target = "coachId", source = "sessionData.coachId")
-    @Mapping(target = "location", source = "sessionData.location")
-    @Mapping(target = "startTime", source = "sessionData.startTime")
-    @Mapping(target = "endTime", source = "sessionData.endTime")
-    @Mapping(target = "capacity", source = "sessionData.capacity")
-    @Mapping(target = "zoneOffset", expression = "java(extractZoneOffset(dto.getSessionData().getStartTime()))")
-    Session toModel(SessionDTO.CreateSession dto);
+    @Mapping(target = "timeRange.from", source = "startTime")
+    @Mapping(target = "timeRange.to", source = "endTime")
+    @Mapping(target = "zoneOffset", expression = "java(extractZoneOffset(dto.getStartTime()))")
+    Session.BaseData toBaseData(SessionDTO dto);
 
-    // =========================================================================
-    // SessionModel -> SessionDTO.Session
-    // =========================================================================
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "sessionData.coachId", source = "coachId")
-    @Mapping(target = "sessionData.location", source = "location")
-    @Mapping(target = "sessionData.capacity", source = "capacity")
-    @Mapping(target = "sessionData.startTime", expression = "java(toOffsetDateTime(session.startTime(), session.zoneOffset()))")
-    @Mapping(target = "sessionData.endTime", expression = "java(toOffsetDateTime(session.endTime(), session.zoneOffset()))")
-    SessionDTO.Session toSessionDTO(Session model);
+    @Mapping(target = "startTime", expression = "java(toOffsetDateTime(model.getTimeRange().getFrom(), model.getZoneOffset()))")
+    @Mapping(target = "endTime", expression = "java(toOffsetDateTime(model.getTimeRange().getTo(), model.getZoneOffset()))")
+    SessionDTO toDto(Session model);
 
-    SessionFilters toModel(SessionDTO.SearchSessionDTO dto);
+    SessionFilters toModel(SearchSessionDTO dto);
 
     // =========================================================================
     // Auxiliar mappings

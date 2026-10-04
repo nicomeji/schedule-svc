@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.gym.platform.schedule.domain.model.Coach;
 
 public interface CoachRepo {
-    Coach create(Coach coach);
+    Coach create(Coach.BaseData coachData);
 
     Optional<Coach> retrieve(Long id);
 }

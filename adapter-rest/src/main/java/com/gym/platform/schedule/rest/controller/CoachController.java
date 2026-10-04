@@ -35,7 +35,7 @@ public class CoachController {
         })
         public ResponseEntity<CoachDTO> create(@Valid @RequestBody CoachDTO dto) {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(mapper.toDto(service.create(mapper.toDomain(dto))));
+                                .body(mapper.toDto(service.create(mapper.toBaseData(dto))));
         }
 
         @GetMapping("/{id}")

@@ -1,7 +1,5 @@
 package com.gym.platform.schedule.rest.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +11,7 @@ import com.gym.platform.schedule.application.service.SessionCrudSvc;
 import com.gym.platform.schedule.application.usecase.AddParticipantToSession;
 import com.gym.platform.schedule.application.usecase.CreateSession;
 import com.gym.platform.schedule.domain.common.Page;
+import com.gym.platform.schedule.rest.contract.SearchSessionDTO;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
 import com.gym.platform.schedule.rest.contract.SessionRegistrationDTO;
 import com.gym.platform.schedule.rest.contract.common.PageDTO;
@@ -37,33 +36,34 @@ public class SessionController {
     private final PageDtoMapper pageMapper;
 
     @PostMapping
-    public ResponseEntity<SessionDTO.Session> create(@Valid @RequestBody SessionDTO.CreateSession dto) {
+    public ResponseEntity<SessionDTO> create(@Valid @RequestBody SessionDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapper.toSessionDTO(createSession.createSession(mapper.toModel(dto))));
+                .body(mapper.toDto(createSession.createSession(mapper.toBaseData(dto))));
     }
 
     @GetMapping("/{sessionId}")
-    public ResponseEntity<SessionDTO.Session> retrieveById(
+    public ResponseEntity<SessionDTO> retrieveById(
             @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId) {
         return service.retrieve(Long.parseLong(sessionId))
-                .map(mapper::toSessionDTO)
+                .map(mapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @GetMapping
-    public ResponseEntity<PageDTO<SessionDTO.Session>> search(
-            @Valid @ValidSessionSearchFilters SessionDTO.SearchSessionDTO filters) {
-        Page<SessionDTO.Session> results = service.search(mapper.toModel(filters)).map(mapper::toSessionDTO);
+    public ResponseEntity<PageDTO<SessionDTO>> search(
+            @Valid @ValidSessionSearchFilters SearchSessionDTO filters) {
+        Page<SessionDTO> results = service.search(mapper.toModel(filters)).map(mapper::toDto);
         return ResponseEntity.ok(pageMapper.toDto(results));
     }
 
     @PostMapping("/{sessionId}/registrations")
-    public ResponseEntity<Boolean> registerParticipant(
+    public ResponseEntity<SessionDTO> registerParticipant(
             @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId,
-            @Valid @RequestBody SessionRegistrationDTO.CreateRegistration registration) {
-        return ResponseEntity
-                .ok(addParticipantToSession.addParticipant(Long.parseLong(sessionId), registration.getParticipantId()));
+            @Valid @RequestBody SessionRegistrationDTO registration) {
+        var session = addParticipantToSession.addParticipant(Long.parseLong(sessionId),
+                registration.getParticipantId());
+        return ResponseEntity.ok(mapper.toDto(session));
     }
     /*
      * @GetMapping("/{id}/registrations")

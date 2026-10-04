@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.gym.platform.schedule.application.exceptions.BusinessException;
+import com.gym.platform.schedule.domain.exceptions.BusinessException;
 import com.gym.platform.schedule.rest.contract.common.ApiErrorDTO;
 
 import jakarta.servlet.http.HttpServletRequest;

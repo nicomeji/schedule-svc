@@ -27,7 +27,7 @@ public class ParticipnatController {
     @PostMapping
     public ResponseEntity<ParticipantDTO> create(@Valid @RequestBody ParticipantDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapper.toDto(service.create(mapper.toDomain(dto))));
+                .body(mapper.toDto(service.create(mapper.toBaseData(dto))));
     }
 
     @GetMapping("/{id}")

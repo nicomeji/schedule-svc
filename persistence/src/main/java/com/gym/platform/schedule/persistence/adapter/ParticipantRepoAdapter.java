@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.gym.platform.schedule.domain.model.Participant;
 import com.gym.platform.schedule.domain.repo.ParticipantRepo;
 import com.gym.platform.schedule.persistence.mapper.ParticipantEntityMapper;
+import com.gym.platform.schedule.persistence.model.ParticipantEntity;
 import com.gym.platform.schedule.persistence.repository.ParticipantRepository;
 
 import lombok.AllArgsConstructor;
@@ -20,19 +21,24 @@ public class ParticipantRepoAdapter implements ParticipantRepo {
     private final ParticipantEntityMapper mapper;
 
     @Override
-    public Participant create(Participant participant) {
-        return mapper.toDomain(repository.save(mapper.toEntity(participant)));
+    public Participant create(Participant.BaseData participantData) {
+        return toDomain(repository.save(mapper.toNewEntity(participantData)));
     }
 
     @Override
     public Optional<Participant> retrieve(Long id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findById(id).map(this::toDomain);
     }
 
-    @Override
     public List<Participant> retrieveSessionParticipants(Long sessionId) {
         return repository.findParticipantsBySessionId(sessionId).stream()
-                .map(mapper::toDomain)
+                .map(this::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    private Participant toDomain(ParticipantEntity entity) {
+        return new Participant(
+                entity.id(),
+                mapper.toBaseData(entity));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.gym.platform.schedule.persistence.model.SessionEntity;
+import com.gym.platform.schedule.persistence.projection.SessionParticipants;
 
 public interface SessionRepository extends SearchSessionRepository, CrudRepository<SessionEntity, Long> {
     @Query("""
@@ -30,4 +31,11 @@ public interface SessionRepository extends SearchSessionRepository, CrudReposito
                 WHERE session_id = :sessionId AND participant_id = :participantId
             """)
     boolean unregisterParticipant(Long sessionId, Long participantId);
+
+    @Query("""
+                SELECT sp.participant_id, sp.registered_at
+                FROM session_participants sp
+                WHERE sp.session_id = :sessionId
+            """)
+    List<SessionParticipants> findSessionParticipantsBySessionId(Long sessionId);
 }

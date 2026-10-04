@@ -7,7 +7,7 @@ import com.gym.platform.schedule.rest.contract.CoachDTO;
 
 @Mapper
 public interface CoachDtoMapper {
-    Coach toDomain(CoachDTO dto);
+    Coach.BaseData toBaseData(CoachDTO dto);
 
     CoachDTO toDto(Coach model);
 }
