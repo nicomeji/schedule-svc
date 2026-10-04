@@ -19,7 +19,7 @@ public abstract class BusinessException extends RuntimeException {
 
     public static class SessionOverlapException extends BusinessException {
         public SessionOverlapException() {
-            super("The coach already has a session scheduled that overlaps with this time slot.", "SESSION_OVERLAP");
+            super("There is a session scheduled that overlaps with this time slot.", "SESSION_OVERLAP");
         }
     }
 

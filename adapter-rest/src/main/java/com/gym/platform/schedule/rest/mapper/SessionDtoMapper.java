@@ -8,9 +8,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.gym.platform.schedule.domain.model.Session;
+import com.gym.platform.schedule.domain.model.Session.ParticipantRegistration;
 import com.gym.platform.schedule.domain.model.SessionFilters;
 import com.gym.platform.schedule.rest.contract.SearchSessionDTO;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
+import com.gym.platform.schedule.rest.contract.SessionRegistrationDTO;
 
 @Mapper
 public interface SessionDtoMapper {
@@ -23,7 +25,9 @@ public interface SessionDtoMapper {
     @Mapping(target = "endTime", expression = "java(toOffsetDateTime(model.getTimeRange().getTo(), model.getZoneOffset()))")
     SessionDTO toDto(Session model);
 
-    SessionFilters toModel(SearchSessionDTO dto);
+    SessionFilters toFiltersModel(SearchSessionDTO dto);
+
+    SessionRegistrationDTO toRegistrationDto(ParticipantRegistration model);
 
     // =========================================================================
     // Auxiliar mappings

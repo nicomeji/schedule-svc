@@ -2,7 +2,6 @@ package com.gym.platform.schedule.persistence.adapter;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -51,13 +50,19 @@ public class SessionRepoAdapter implements SessionRepo {
     List<Session> retrieveCoachSessions(Coach coach) {
         return repository.findSessionsByCoachId(coach.getId()).stream()
                 .map(this::toDomain)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    List<Session> retrieveParticipantSessions(Participant participant) {
+        return repository.findSessionsByParticipantId(participant.getId()).stream()
+                .map(this::toDomain)
+                .toList();
     }
 
     List<Session.ParticipantRegistration> retrieveSessionRegistrations(Session session) {
         return repository.findSessionParticipantsBySessionId(session.getId()).stream()
                 .map(mapper::mapRegistration)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Session toDomain(SessionEntity entity) {

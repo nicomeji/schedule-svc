@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.platform.schedule.rest.contract.CoachDTO;
 import com.gym.platform.schedule.rest.contract.ParticipantDTO;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
+import com.gym.platform.schedule.rest.contract.SessionRegistrationDTO;
 import com.gym.platform.schedule.rest.contract.common.PageDTO;
 import com.gym.platform.schedule.rest.contract.common.TimeRangeDTO;
 
@@ -24,6 +25,7 @@ import static io.restassured.RestAssured.given;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
@@ -108,6 +110,36 @@ public abstract class BaseIntegrationTest {
                 .extract()
                 .asString();
         return parse(json, new TypeReference<PageDTO<SessionDTO>>() {
+        });
+    }
+
+    protected SessionRegistrationDTO registerParticipant(Long sessionId, Long participantId) {
+        var registration = new SessionRegistrationDTO();
+        registration.setParticipantId(participantId);
+
+        var json = given()
+                .contentType(ContentType.JSON)
+                .body(registration)
+                .when()
+                .post("/api/v1/sessions/" + sessionId + "/registrations")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .asString();
+
+        return parse(json, SessionRegistrationDTO.class);
+    }
+
+    protected List<SessionRegistrationDTO> retrieveRegistrations(Long sessionId) {
+        var json = given()
+                .when()
+                .get("/api/v1/sessions/" + sessionId + "/registrations")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .asString();
+
+        return parse(json, new TypeReference<List<SessionRegistrationDTO>>() {
         });
     }
 

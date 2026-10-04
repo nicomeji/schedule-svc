@@ -17,7 +17,7 @@ public class CoachIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Create a new coach successfully")
     public void createCoachSuccessfully() {
-        CoachDTO coach = createCoach("Juan CoachIT", "juan.CoachIT@gym.com");
+        var coach = createCoach("Juan CoachIT", "juan.CoachIT@gym.com");
         assertNotNull(coach.getId());
         assertEquals("Juan CoachIT", coach.getName());
         assertEquals("juan.CoachIT@gym.com", coach.getEmail());
@@ -26,7 +26,7 @@ public class CoachIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Retrieve coach successfully")
     public void retrieveCoachSuccessfully() {
-        CoachDTO created = createCoach("Juan2 CoachIT", "juan2.CoachIT@gym.com");
+        var created = createCoach("Juan2 CoachIT", "juan2.CoachIT@gym.com");
         assertNotNull(created.getId());
 
         var json = given()
@@ -37,7 +37,8 @@ public class CoachIT extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .asString();
-        CoachDTO retrieved = parse(json, CoachDTO.class);
+
+        var retrieved = parse(json, CoachDTO.class);
         assertEquals(created.getId(), retrieved.getId());
         assertEquals("Juan2 CoachIT", retrieved.getName());
         assertEquals("juan2.CoachIT@gym.com", retrieved.getEmail());

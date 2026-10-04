@@ -18,6 +18,15 @@ public interface SessionRepository extends SearchSessionRepository, CrudReposito
             """)
     List<SessionEntity> findSessionsByCoachId(Long coachId);
 
+    @Query("""
+                SELECT s.*
+                FROM sessions s
+                JOIN session_participants sp ON s.id = sp.session_id
+                WHERE sp.participant_id = :participantId
+                ORDER BY s.start_time DESC
+            """)
+    List<SessionEntity> findSessionsByParticipantId(Long participantId);
+
     @Modifying
     @Query("""
                 INSERT INTO session_participants (session_id, participant_id, registered_at)

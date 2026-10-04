@@ -2,7 +2,6 @@ package com.gym.platform.schedule.persistence.adapter;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class ParticipantRepoAdapter implements ParticipantRepo {
+    private final SessionRepoAdapter sessionRepoAdapter;
     private final ParticipantRepository repository;
     private final ParticipantEntityMapper mapper;
 
@@ -33,12 +33,13 @@ public class ParticipantRepoAdapter implements ParticipantRepo {
     public List<Participant> retrieveSessionParticipants(Long sessionId) {
         return repository.findParticipantsBySessionId(sessionId).stream()
                 .map(this::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Participant toDomain(ParticipantEntity entity) {
         return new Participant(
                 entity.id(),
-                mapper.toBaseData(entity));
+                mapper.toBaseData(entity),
+                sessionRepoAdapter::retrieveParticipantSessions);
     }
 }

@@ -17,7 +17,7 @@ public class ParticipantIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Create a new participant successfully")
     public void createParticipantSuccessfully() {
-        ParticipantDTO participant = createParticiant("Juan ParticipantIT", "juan.ParticipantIT@gym.com");
+        var participant = createParticiant("Juan ParticipantIT", "juan.ParticipantIT@gym.com");
         assertNotNull(participant.getId());
         assertEquals("Juan ParticipantIT", participant.getName());
         assertEquals("juan.ParticipantIT@gym.com", participant.getEmail());
@@ -26,7 +26,7 @@ public class ParticipantIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Retrieve participant successfully")
     public void retrieveParticipantSuccessfully() {
-        ParticipantDTO created = createParticiant("Juan2 ParticipantIT", "juan2.ParticipantIT@gym.com");
+        var created = createParticiant("Juan2 ParticipantIT", "juan2.ParticipantIT@gym.com");
         assertNotNull(created.getId());
 
         var json = given()
@@ -37,7 +37,8 @@ public class ParticipantIT extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .asString();
-        ParticipantDTO retrieved = parse(json, ParticipantDTO.class);
+
+        var retrieved = parse(json, ParticipantDTO.class);
         assertEquals(created.getId(), retrieved.getId());
         assertEquals("Juan2 ParticipantIT", retrieved.getName());
         assertEquals("juan2.ParticipantIT@gym.com", retrieved.getEmail());

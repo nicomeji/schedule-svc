@@ -1,7 +1,5 @@
 package com.gym.platform.schedule.application.usecase;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +26,21 @@ public class AddParticipantToSession {
 
         var participantIds = session.retrieveRegistrations().stream()
                 .map(Session.ParticipantRegistration::getParticipantId)
-                .collect(Collectors.toList());
+                .toList();
 
         if (session.getCapacity() <= participantIds.size()) {
             throw new BusinessException.SessoinCapacityExceededException();
         }
         if (participantIds.contains(participantId)) {
             throw new BusinessException.DuplicateSessionRegistrationException();
+        }
+
+        var isOverlapping = participant.retrieveSessions().stream()
+                .map(Session::getTimeRange)
+                .anyMatch(session.getTimeRange()::isOverlapping);
+
+        if (isOverlapping) {
+            throw new BusinessException.SessionOverlapException();
         }
 
         return sessionRepo.registerParticipant(session, participant);

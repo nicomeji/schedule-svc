@@ -1,10 +1,8 @@
 package com.gym.platform.schedule.boot.session;
 
 import com.gym.platform.schedule.boot.BaseIntegrationTest;
-import com.gym.platform.schedule.rest.contract.CoachDTO;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
 import com.gym.platform.schedule.rest.contract.common.ApiErrorDTO;
-import com.gym.platform.schedule.rest.contract.common.TimeRangeDTO;
 
 import io.restassured.http.ContentType;
 
@@ -22,12 +20,12 @@ public class SessionCreationIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Create a new session successfully")
     public void createSesssionSuccessfully() {
-        TimeRangeDTO range = oneHourRange(OffsetDateTime.now().plusDays(1));
+        var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        CoachDTO coach = createCoach("Juan SessionCreationIT", "juan.SessionCreationIT@gym.com");
+        var coach = createCoach("Juan SessionCreationIT", "juan.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
-        SessionDTO session = createSession(coach.getId(), range, 12);
+        var session = createSession(coach.getId(), range, 12);
         assertNotNull(session.getId());
         assertEquals(coach.getId(), session.getCoachId());
         assertEquals(range.getFrom(), session.getStartTime());
@@ -39,12 +37,12 @@ public class SessionCreationIT extends BaseIntegrationTest {
     @Test
     @DisplayName("Retrieve session successfully")
     public void retrieveSessionSuccessfully() {
-        TimeRangeDTO range = oneHourRange(OffsetDateTime.now().plusDays(1));
+        var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        CoachDTO coach = createCoach("Juan2 SessionCreationIT", "juan2.SessionCreationIT@gym.com");
+        var coach = createCoach("Juan2 SessionCreationIT", "juan2.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
-        SessionDTO created = createSession(coach.getId(), range, 15);
+        var created = createSession(coach.getId(), range, 15);
         assertNotNull(created.getId());
 
         var json = given()
@@ -55,7 +53,7 @@ public class SessionCreationIT extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .asString();
-        SessionDTO retrieved = parse(json, SessionDTO.class);
+        var retrieved = parse(json, SessionDTO.class);
         assertEquals(created.getId(), retrieved.getId());
         assertEquals(coach.getId(), retrieved.getCoachId());
         assertEquals(range.getFrom(), retrieved.getStartTime());
@@ -65,17 +63,17 @@ public class SessionCreationIT extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("Create a new session successfully")
+    @DisplayName("Coach cannot participate in overlapping sessions")
     public void cannotOverlapSesssions() {
-        TimeRangeDTO range = oneHourRange(OffsetDateTime.now().plusDays(1));
+        var range = oneHourRange(OffsetDateTime.now().plusDays(1));
 
-        CoachDTO coach = createCoach("Juan3 SessionCreationIT", "juan3.SessionCreationIT@gym.com");
+        var coach = createCoach("Juan3 SessionCreationIT", "juan3.SessionCreationIT@gym.com");
         assertNotNull(coach.getId());
 
-        SessionDTO session = createSession(coach.getId(), range, 12);
+        var session = createSession(coach.getId(), range, 12);
         assertNotNull(session.getId());
 
-        SessionDTO createSession = new SessionDTO();
+        var createSession = new SessionDTO();
         createSession.setCoachId(coach.getId());
         createSession.setLocation("location_1");
         createSession.setStartTime(range.getFrom());

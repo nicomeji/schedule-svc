@@ -19,6 +19,13 @@ public class Participant {
     @NonNull
     private final BaseData data;
 
+    @NonNull
+    private final Function<Participant, List<Session>> retrieveSessions;
+
+    public List<Session> retrieveSessions() {
+        return retrieveSessions.apply(this);
+    }
+
     @Data
     public static class BaseData {
         @NonNull

@@ -2,7 +2,6 @@ package com.gym.platform.schedule.domain.common;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public record Page<T>(
                 List<T> searchedElements,
@@ -11,7 +10,7 @@ public record Page<T>(
 
         public <U> Page<U> map(Function<T, U> mapper) {
                 return new Page<>(
-                                searchedElements.stream().map(mapper).collect(Collectors.toList()),
+                                searchedElements.stream().map(mapper).toList(),
                                 this.searchedPage,
                                 this.totalElements);
         }

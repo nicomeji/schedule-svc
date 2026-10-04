@@ -1,5 +1,7 @@
 package com.gym.platform.schedule.rest.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,28 +55,24 @@ public class SessionController {
     @GetMapping
     public ResponseEntity<PageDTO<SessionDTO>> search(
             @Valid @ValidSessionSearchFilters SearchSessionDTO filters) {
-        Page<SessionDTO> results = service.search(mapper.toModel(filters)).map(mapper::toDto);
+        Page<SessionDTO> results = service.search(mapper.toFiltersModel(filters)).map(mapper::toDto);
         return ResponseEntity.ok(pageMapper.toDto(results));
     }
 
     @PostMapping("/{sessionId}/registrations")
-    public ResponseEntity<SessionDTO> registerParticipant(
+    public ResponseEntity<SessionRegistrationDTO> registerParticipant(
             @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId,
             @Valid @RequestBody SessionRegistrationDTO registration) {
-        var session = addParticipantToSession.addParticipant(Long.parseLong(sessionId),
-                registration.getParticipantId());
-        return ResponseEntity.ok(mapper.toDto(session));
+        addParticipantToSession.addParticipant(Long.parseLong(sessionId), registration.getParticipantId());
+        return ResponseEntity.ok(registration);
     }
-    /*
-     * @GetMapping("/{id}/registrations")
-     * public ResponseEntity<List<SessionRegistrationDTO.SessionRegistration>>
-     * retrieveRegistrations(
-     * 
-     * @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number")
-     * String sessionId) {
-     * return ResponseEntity
-     * .ok(addParticipantToSession.addParticipant(Long.parseLong(sessionId),
-     * registration.getParticipantId()));
-     * }
-     */
+
+    @GetMapping("/{sessionId}/registrations")
+    public ResponseEntity<List<SessionRegistrationDTO>> retrieveRegistrations(
+            @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId) {
+        return ResponseEntity.ok(service.registrations(Long.parseLong(sessionId)).stream()
+                .map(mapper::toRegistrationDto)
+                .toList());
+    }
+
 }
