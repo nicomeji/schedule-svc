@@ -51,15 +51,10 @@ public abstract class BaseIntegrationTest {
         participant.setName(name);
         participant.setEmail(email);
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(participant)
-                .when()
-                .post("/api/v1/participants")
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(participant)
+                .when().post("/api/v1/participants")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().asString();
         return parse(json, ParticipantDTO.class);
     }
 
@@ -68,15 +63,10 @@ public abstract class BaseIntegrationTest {
         coach.setName(name);
         coach.setEmail(email);
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(coach)
-                .when()
-                .post("/api/v1/coaches")
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(coach)
+                .when().post("/api/v1/coaches")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().asString();
         return parse(json, CoachDTO.class);
     }
 
@@ -88,27 +78,18 @@ public abstract class BaseIntegrationTest {
         createSession.setEndTime(range.getTo());
         createSession.setCapacity(capacity);
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(createSession)
-                .when()
-                .post("/api/v1/sessions")
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(createSession)
+                .when().post("/api/v1/sessions")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().asString();
         return parse(json, SessionDTO.class);
     }
 
     protected PageDTO<SessionDTO> searchSessions(Map<String, String> params) {
-        var json = given()
-                .queryParams(params)
-                .when()
-                .get("/api/v1/sessions")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+        var json = given().queryParams(params)
+                .when().get("/api/v1/sessions")
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().asString();
         return parse(json, new TypeReference<PageDTO<SessionDTO>>() {
         });
     }
@@ -117,27 +98,19 @@ public abstract class BaseIntegrationTest {
         var registration = new SessionRegistrationDTO();
         registration.setParticipantId(participantId);
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(registration)
-                .when()
-                .post("/api/v1/sessions/" + sessionId + "/registrations")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(registration)
+                .when().post("/api/v1/sessions/" + sessionId + "/registrations")
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().asString();
 
         return parse(json, SessionRegistrationDTO.class);
     }
 
     protected List<SessionRegistrationDTO> retrieveRegistrations(Long sessionId) {
         var json = given()
-                .when()
-                .get("/api/v1/sessions/" + sessionId + "/registrations")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+                .when().get("/api/v1/sessions/" + sessionId + "/registrations")
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().asString();
 
         return parse(json, new TypeReference<List<SessionRegistrationDTO>>() {
         });

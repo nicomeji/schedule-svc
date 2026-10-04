@@ -45,14 +45,10 @@ public class SessionCreationIT extends BaseIntegrationTest {
         var created = createSession(coach.getId(), range, 15);
         assertNotNull(created.getId());
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/v1/sessions/" + created.getId())
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON)
+                .when().get("/api/v1/sessions/" + created.getId())
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().asString();
         var retrieved = parse(json, SessionDTO.class);
         assertEquals(created.getId(), retrieved.getId());
         assertEquals(coach.getId(), retrieved.getCoachId());
@@ -80,15 +76,10 @@ public class SessionCreationIT extends BaseIntegrationTest {
         createSession.setEndTime(range.getTo());
         createSession.setCapacity(12);
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(createSession)
-                .when()
-                .post("/api/v1/sessions")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(createSession)
+                .when().post("/api/v1/sessions")
+                .then().statusCode(HttpStatus.CONFLICT.value())
+                .extract().asString();
 
         var error = parse(json, ApiErrorDTO.class);
         assertEquals("SESSION_OVERLAP", error.getErrorCode());

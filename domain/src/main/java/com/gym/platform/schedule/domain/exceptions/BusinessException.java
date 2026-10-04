@@ -34,4 +34,10 @@ public abstract class BusinessException extends RuntimeException {
             super("The participant is already registered in the session.", "DUPLICATE_SESSION_REGISTRATION");
         }
     }
+
+    public static class NotEmpstySessionException extends BusinessException {
+        public NotEmpstySessionException() {
+            super("There are participants registered to the session.", "NOT_EMPTY_SESSION");
+        }
+    }
 }

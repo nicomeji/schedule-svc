@@ -1,9 +1,11 @@
 package com.gym.platform.schedule.rest.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gym.platform.schedule.application.service.SessionCrudSvc;
 import com.gym.platform.schedule.application.usecase.AddParticipantToSession;
 import com.gym.platform.schedule.application.usecase.CreateSession;
+import com.gym.platform.schedule.application.usecase.DeleteSessionSvc;
+import com.gym.platform.schedule.application.usecase.RemoveParticipantFromSession;
 import com.gym.platform.schedule.domain.common.Page;
 import com.gym.platform.schedule.rest.contract.SearchSessionDTO;
 import com.gym.platform.schedule.rest.contract.SessionDTO;
+import com.gym.platform.schedule.rest.contract.SessionDeletionDTO;
 import com.gym.platform.schedule.rest.contract.SessionRegistrationDTO;
 import com.gym.platform.schedule.rest.contract.common.PageDTO;
 import com.gym.platform.schedule.rest.mapper.PageDtoMapper;
@@ -34,11 +39,13 @@ public class SessionController {
     private final SessionCrudSvc service;
     private final CreateSession createSession;
     private final AddParticipantToSession addParticipantToSession;
+    private final RemoveParticipantFromSession removeParticipantFromSession;
+    private final DeleteSessionSvc deleteSessionSvc;
     private final SessionDtoMapper mapper;
     private final PageDtoMapper pageMapper;
 
     @PostMapping
-    public ResponseEntity<SessionDTO> create(@Valid @RequestBody SessionDTO dto) {
+    public ResponseEntity<SessionDTO> create(@RequestBody @Valid SessionDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mapper.toDto(createSession.createSession(mapper.toBaseData(dto))));
     }
@@ -59,10 +66,21 @@ public class SessionController {
         return ResponseEntity.ok(pageMapper.toDto(results));
     }
 
-    @PostMapping("/{sessionId}/registrations")
-    public ResponseEntity<SessionRegistrationDTO> registerParticipant(
+    @DeleteMapping("/{sessionId}")
+    public ResponseEntity<Void> deleteById(
             @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId,
-            @Valid @RequestBody SessionRegistrationDTO registration) {
+            @RequestBody(required = false) @Valid SessionDeletionDTO sessionDeletionDTO) {
+        List<Long> participantIds = (sessionDeletionDTO != null)
+                ? sessionDeletionDTO.getParticipantIds()
+                : Collections.emptyList();
+        deleteSessionSvc.deleteSession(Long.parseLong(sessionId), participantIds);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{sessionId}/registrations")
+    public ResponseEntity<SessionRegistrationDTO> addParticipant(
+            @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId,
+            @RequestBody @Valid SessionRegistrationDTO registration) {
         addParticipantToSession.addParticipant(Long.parseLong(sessionId), registration.getParticipantId());
         return ResponseEntity.ok(registration);
     }
@@ -75,4 +93,11 @@ public class SessionController {
                 .toList());
     }
 
+    @DeleteMapping("/{sessionId}/registrations/{participantId}")
+    public ResponseEntity<Void> removeParticipant(
+            @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String sessionId,
+            @PathVariable @Pattern(regexp = "^[0-9]+$", message = "ID must be a number") String participantId) {
+        removeParticipantFromSession.removeParticipant(Long.parseLong(sessionId), Long.parseLong(participantId));
+        return ResponseEntity.ok().build();
+    }
 }

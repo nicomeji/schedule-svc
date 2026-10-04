@@ -29,14 +29,10 @@ public class CoachIT extends BaseIntegrationTest {
         var created = createCoach("Juan2 CoachIT", "juan2.CoachIT@gym.com");
         assertNotNull(created.getId());
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/v1/coaches/" + created.getId())
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON)
+                .when().get("/api/v1/coaches/" + created.getId())
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().asString();
 
         var retrieved = parse(json, CoachDTO.class);
         assertEquals(created.getId(), retrieved.getId());

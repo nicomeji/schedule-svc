@@ -17,7 +17,7 @@ public class AddParticipantToSession {
     private final ParticipantRepo participantRepo;
 
     @Transactional
-    public Session addParticipant(Long sessionId, Long participantId) {
+    public void addParticipant(Long sessionId, Long participantId) {
         var session = sessionRepo.retrieve(sessionId)
                 .orElseThrow(BusinessException.NotFouncException::new);
 
@@ -43,6 +43,6 @@ public class AddParticipantToSession {
             throw new BusinessException.SessionOverlapException();
         }
 
-        return sessionRepo.registerParticipant(session, participant);
+        sessionRepo.addParticipant(session, participant);
     }
 }

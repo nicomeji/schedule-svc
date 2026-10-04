@@ -14,5 +14,9 @@ public interface SessionRepo {
 
     Page<Session> search(SessionFilters filters);
 
-    Session registerParticipant(Session session, Participant participant);
+    void addParticipant(Session session, Participant participant);
+
+    void removeParticipant(Session session, Participant participant);
+
+    void delete(Session session);
 }

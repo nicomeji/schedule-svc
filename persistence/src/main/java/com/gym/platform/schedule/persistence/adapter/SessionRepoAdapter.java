@@ -40,11 +40,20 @@ public class SessionRepoAdapter implements SessionRepo {
     }
 
     @Override
-    public Session registerParticipant(Session session, Participant participant) {
-        if (repository.registerParticipant(session.getId(), participant.getId())) {
-            return session;
+    public void addParticipant(Session session, Participant participant) {
+        if (!repository.addParticipant(session.getId(), participant.getId())) {
+            throw new BusinessException.DuplicateSessionRegistrationException();
         }
-        throw new BusinessException.DuplicateSessionRegistrationException();
+    }
+
+    @Override
+    public void removeParticipant(Session session, Participant participant) {
+        repository.removeParticipant(session.getId(), participant.getId());
+    }
+
+    @Override
+    public void delete(Session session) {
+        repository.delete(mapper.toExistingEntity(session));
     }
 
     List<Session> retrieveCoachSessions(Coach coach) {

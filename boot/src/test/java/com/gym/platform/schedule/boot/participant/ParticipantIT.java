@@ -29,14 +29,10 @@ public class ParticipantIT extends BaseIntegrationTest {
         var created = createParticiant("Juan2 ParticipantIT", "juan2.ParticipantIT@gym.com");
         assertNotNull(created.getId());
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/v1/participants/" + created.getId())
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON)
+                .when().get("/api/v1/participants/" + created.getId())
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().asString();
 
         var retrieved = parse(json, ParticipantDTO.class);
         assertEquals(created.getId(), retrieved.getId());

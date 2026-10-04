@@ -40,4 +40,16 @@ public class BusinessExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+
+    @ExceptionHandler(BusinessException.NotEmpstySessionException.class)
+    public ResponseEntity<ApiErrorDTO> handleNotEmptyException(
+            BusinessException ex,
+            HttpServletRequest request) {
+
+        var response = new ApiErrorDTO();
+        response.setMessage(ex.getMessage());
+        response.setErrorCode(ex.getErrorCode());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }

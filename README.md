@@ -80,3 +80,13 @@ curl --location 'localhost:8080/api/v1/sessions/3/registrations' \
 --data '{
     "participant_id": 1
 }'
+
+Retrieve registrations:
+curl --location 'localhost:8080/api/v1/sessions/1/registrations'
+
+Delete Session:
+curl --location --request DELETE 'localhost:8080/api/v1/sessions/1' \
+--header 'Content-Type: application/json' \
+--data '{
+    "participant_ids": [1]
+}'

@@ -66,6 +66,34 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Delete participant registration")
+    public void removeRegistration() {
+        var range = oneHourRange(OffsetDateTime.now().plusDays(1));
+
+        var coach = createCoach("Clara SessionRegistrationIT", "clara.SessionRegistrationIT@gym.com");
+        assertNotNull(coach.getId());
+
+        var session = createSession(coach.getId(), range, 12);
+        assertNotNull(session.getId());
+
+        var participant = createParticiant("Clara SessionRegistrationIT", "clara.SessionRegistrationIT@gym.com");
+        assertNotNull(participant.getId());
+
+        var registration = registerParticipant(session.getId(), participant.getId());
+        assertNotNull(registration.getParticipantId());
+
+        var registrations = retrieveRegistrations(session.getId());
+        assertEquals(1, registrations.size());
+        assertEquals(participant.getId(), registrations.get(0).getParticipantId());
+
+        given().when().delete("/api/v1/sessions/" + session.getId() + "/registrations/" + participant.getId())
+                .then().statusCode(HttpStatus.OK.value());
+
+        registrations = retrieveRegistrations(session.getId());
+        assertEquals(0, registrations.size());
+    }
+
+    @Test
     @DisplayName("Participant cannot register to a session twice")
     public void cannotDuplicateRegistration() {
         var range = oneHourRange(OffsetDateTime.now().plusDays(1));
@@ -85,15 +113,10 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
         var duplicated = new SessionRegistrationDTO();
         duplicated.setParticipantId(participant.getId());
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(registration)
-                .when()
-                .post("/api/v1/sessions/" + session.getId() + "/registrations")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(registration)
+                .when().post("/api/v1/sessions/" + session.getId() + "/registrations")
+                .then().statusCode(HttpStatus.CONFLICT.value())
+                .extract().asString();
 
         var error = parse(json, ApiErrorDTO.class);
         assertEquals("DUPLICATE_SESSION_REGISTRATION", error.getErrorCode());
@@ -123,15 +146,10 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
         var overlaped = new SessionRegistrationDTO();
         overlaped.setParticipantId(participant.getId());
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(registration)
-                .when()
-                .post("/api/v1/sessions/" + session2.getId() + "/registrations")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(registration)
+                .when().post("/api/v1/sessions/" + session2.getId() + "/registrations")
+                .then().statusCode(HttpStatus.CONFLICT.value())
+                .extract().asString();
 
         var error = parse(json, ApiErrorDTO.class);
         assertEquals("SESSION_OVERLAP", error.getErrorCode());
@@ -156,15 +174,10 @@ public class SessionRegistrationIT extends BaseIntegrationTest {
         var registration = registerParticipant(session.getId(), participant2.getId());
         assertNotNull(registration.getParticipantId());
 
-        var json = given()
-                .contentType(ContentType.JSON)
-                .body(registration)
-                .when()
-                .post("/api/v1/sessions/" + session.getId() + "/registrations")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .extract()
-                .asString();
+        var json = given().contentType(ContentType.JSON).body(registration)
+                .when().post("/api/v1/sessions/" + session.getId() + "/registrations")
+                .then().statusCode(HttpStatus.CONFLICT.value())
+                .extract().asString();
 
         var error = parse(json, ApiErrorDTO.class);
         assertEquals("EXCEEDED_SESSION_REGISTRATION", error.getErrorCode());

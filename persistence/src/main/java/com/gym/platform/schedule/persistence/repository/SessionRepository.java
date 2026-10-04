@@ -32,14 +32,14 @@ public interface SessionRepository extends SearchSessionRepository, CrudReposito
                 INSERT INTO session_participants (session_id, participant_id, registered_at)
                 VALUES (:sessionId, :participantId, NOW())
             """)
-    boolean registerParticipant(Long sessionId, Long participantId);
+    boolean addParticipant(Long sessionId, Long participantId);
 
     @Modifying
     @Query("""
                 DELETE FROM session_participants
                 WHERE session_id = :sessionId AND participant_id = :participantId
             """)
-    boolean unregisterParticipant(Long sessionId, Long participantId);
+    boolean removeParticipant(Long sessionId, Long participantId);
 
     @Query("""
                 SELECT sp.participant_id, sp.registered_at
